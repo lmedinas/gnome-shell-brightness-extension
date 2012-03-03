@@ -34,7 +34,7 @@ const BrightnessIface = {
     methods: 
     [
 	{ name: 'StepDown', inSignature: '', outSignature: 'u' },
-	{ name: 'SetPercentage', inSignature: 'uu', outSignature: '' }
+	{ name: 'SetPercentage', inSignature: 'u', outSignature: '' }
     ],        
 };
 
@@ -94,6 +94,11 @@ ScreenBrightness.prototype = {
             GLib.spawn_command_line_async('gdbus call --session --dest org.gnome.SettingsDaemon --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.SetPercentage 10');
 	});
 	this.menu.addMenuItem(item10);
+
+	this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
+	this.menu.addAction(_("Configure Screen settings..."), function() {
+            GLib.spawn_command_line_async('gnome-control-center screen');
+        });
     }
 }
 
