@@ -34,8 +34,8 @@ const BrightnessIface = {
     methods: 
     [
 	{ name: 'StepDown', inSignature: '', outSignature: 'u' },
-	{ name: 'SetPercentage', inSignature: 'u', outSignature: '' }
-    ],        
+	{ name: 'SetPercentage', inSignature: 'u', outSignature: 'u' }
+    ]
 };
 
 let BrightnessDbus = DBus.makeProxyClass(BrightnessIface);
@@ -48,26 +48,16 @@ ScreenBrightness.prototype = {
     __proto__: PanelMenu.SystemStatusButton.prototype,
 
     _init: function(){
-        PanelMenu.SystemStatusButton.prototype._init.call(this, 'brightness');
+        PanelMenu.SystemStatusButton.prototype._init.call(this, 'display-brightness-symbolic');
 
-        this.statusLabel = new St.Label({
-            text: "Light",
-            style_class: "temperature-label"
-        });
-
-        // destroy all previously created children, and add our statusLabel
-        this.actor.get_children().forEach(function(c) {
-            c.destroy()
-        });
-
-        this.actor.add_actor(this.statusLabel);
+	this.setIcon('display-brightness-symbolic');
 
 	this._proxy = new BrightnessDbus(DBus.session, 'org.gnome.SettingsDaemon', '/org/gnome/SettingsDaemon/Power');
 
 	let item100 = new PopupMenu.PopupMenuItem("100%");
         item100.connect('activate',function() {
-	    //this._proxy.SetPercentage(10);
-	    GLib.spawn_command_line_async('gdbus call --session --dest org.gnome.SettingsDaemon --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.SetPercentage 100');
+	    //this._proxy.SetPercentageRemote(100);
+	    GLib.spawn_command_line_async('gdbus call --session --dest org.gnome.SettingsDaemon --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.SetPercentage 100');		
         });
 	this.menu.addMenuItem(item100);
 
