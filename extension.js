@@ -56,7 +56,6 @@ ScreenBrightness.prototype = {
 
 	let item100 = new PopupMenu.PopupMenuItem("100%");
         item100.connect('activate',function() {
-	    //_proxy.StepDownRemote();
 	    this._proxy.SetPercentageRemote(100);
         });
 	this.menu.addMenuItem(item100);
