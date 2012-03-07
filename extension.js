@@ -52,36 +52,36 @@ ScreenBrightness.prototype = {
 
 	this.setIcon('display-brightness-symbolic');
 
-	this._proxy = new BrightnessDbus(DBus.session, 'org.gnome.SettingsDaemon', '/org/gnome/SettingsDaemon/Power');
+	_proxy = new BrightnessDbus(DBus.session, 'org.gnome.SettingsDaemon', '/org/gnome/SettingsDaemon/Power');
 
 	let item100 = new PopupMenu.PopupMenuItem("100%");
         item100.connect('activate',function() {
-	    //this._proxy.SetPercentageRemote(100);
-	    GLib.spawn_command_line_async('gdbus call --session --dest org.gnome.SettingsDaemon --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.SetPercentage 100');		
+	    //_proxy.StepDownRemote();
+	    this._proxy.SetPercentageRemote(100);
         });
 	this.menu.addMenuItem(item100);
 
 	let item75 = new PopupMenu.PopupMenuItem("75%");
 	item75.connect('activate',function() {
-            GLib.spawn_command_line_async('gdbus call --session --dest org.gnome.SettingsDaemon --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.SetPercentage 75');
+	    this._proxy.SetPercentageRemote(75);
 	});
 	this.menu.addMenuItem(item75);
        	
 	let item50 = new PopupMenu.PopupMenuItem("50%");
 	item50.connect('activate',function() {
-            GLib.spawn_command_line_async('gdbus call --session --dest org.gnome.SettingsDaemon --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.SetPercentage 50');
+	    this._proxy.SetPercentageRemote(50);
 	});
 	this.menu.addMenuItem(item50);
 
 	let item25 = new PopupMenu.PopupMenuItem("25%");
 	item25.connect('activate',function() {
-            GLib.spawn_command_line_async('gdbus call --session --dest org.gnome.SettingsDaemon --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.SetPercentage 25');
+	    this._proxy.SetPercentageRemote(25);
 	});
 	this.menu.addMenuItem(item25);
 
 	let item10 = new PopupMenu.PopupMenuItem("10%");
 	item10.connect('activate',function() {
-            GLib.spawn_command_line_async('gdbus call --session --dest org.gnome.SettingsDaemon --object-path /org/gnome/SettingsDaemon/Power --method org.gnome.SettingsDaemon.Power.Screen.SetPercentage 10');
+	    this._proxy.SetPercentageRemote(10);
 	});
 	this.menu.addMenuItem(item10);
 
