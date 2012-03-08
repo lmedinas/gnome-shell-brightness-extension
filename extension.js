@@ -85,7 +85,7 @@ ScreenBrightness.prototype = {
 	this.menu.addMenuItem(item10);
 
 	this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-	this.menu.addAction(_("Configure Screen settings..."), function() {
+	this.menu.addAction(_("Configure Screen Settings"), function() {
             GLib.spawn_command_line_async('gnome-control-center screen');
         });
     }
