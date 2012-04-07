@@ -33,6 +33,7 @@ const BrightnessIface = {
     name: 'org.gnome.SettingsDaemon.Power.Screen',
     methods: 
     [
+	{ name: 'GetPercentage', inSignature: '',  outSignature: 'u'},
 	{ name: 'StepDown', inSignature: '', outSignature: 'u' },
 	{ name: 'SetPercentage', inSignature: 'u', outSignature: 'u' }
     ]
@@ -47,50 +48,37 @@ function ScreenBrightness() {
 ScreenBrightness.prototype = {
     __proto__: PanelMenu.SystemStatusButton.prototype,
 
-    _init: function(){
+    _init: function() {
         PanelMenu.SystemStatusButton.prototype._init.call(this, 'display-brightness-symbolic');
 
 	this.setIcon('display-brightness-symbolic');
 
 	_proxy = new BrightnessDbus(DBus.session, 'org.gnome.SettingsDaemon', '/org/gnome/SettingsDaemon/Power');
 
-	let item100 = new PopupMenu.PopupMenuItem("100%");
-        item100.connect('activate',function() {
-	    this._proxy.SetPercentageRemote(100);
-        });
-	this.menu.addMenuItem(item100);
+        let label = new PopupMenu.PopupMenuItem(_("Brightness"), { reactive: false });
+        this.menu.addMenuItem(label);
+	this._Slider = new PopupMenu.PopupSliderMenuItem(0);
+	this._Slider.connect('value-changed', function(item) {
+	    let val = item._value * 100;
+	    this._proxy.SetPercentageRemote(val);
+	});
 
-	let item75 = new PopupMenu.PopupMenuItem("75%");
-	item75.connect('activate',function() {
-	    this._proxy.SetPercentageRemote(75);
-	});
-	this.menu.addMenuItem(item75);
-       	
-	let item50 = new PopupMenu.PopupMenuItem("50%");
-	item50.connect('activate',function() {
-	    this._proxy.SetPercentageRemote(50);
-	});
-	this.menu.addMenuItem(item50);
-
-	let item25 = new PopupMenu.PopupMenuItem("25%");
-	item25.connect('activate',function() {
-	    this._proxy.SetPercentageRemote(25);
-	});
-	this.menu.addMenuItem(item25);
-
-	let item10 = new PopupMenu.PopupMenuItem("10%");
-	item10.connect('activate',function() {
-	    this._proxy.SetPercentageRemote(10);
-	});
-	this.menu.addMenuItem(item10);
+	this.menu.addMenuItem(this._Slider);
 
 	this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-	this.menu.addAction(_("Configure Screen Settings"), function() {
-            GLib.spawn_command_line_async('gnome-control-center screen');
-        });
+
+	this.menu.addSettingsAction(_("Configure Screen settings"), 'gnome-screen-panel.desktop');
+	
+	_proxy.GetPercentageRemote(Lang.bind(this, function (result, error) {
+	    if (error) {
+                this._Slider.setValue(1);
+	    } else {
+		let value = result / 100;
+		this._Slider.setValue(value);
+	    }
+	}));
     }
 }
-
 
 function init() {
 //do nothing
