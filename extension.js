@@ -53,7 +53,7 @@ ScreenBrightness.prototype = {
 
 	this.setIcon('display-brightness-symbolic');
 
-	_proxy = new BrightnessDbus(DBus.session, 'org.gnome.SettingsDaemon', '/org/gnome/SettingsDaemon/Power');
+	let _proxy = new BrightnessDbus(DBus.session, 'org.gnome.SettingsDaemon', '/org/gnome/SettingsDaemon/Power');
 
         let label = new PopupMenu.PopupMenuItem(_("Brightness"), { reactive: false });
         this.menu.addMenuItem(label);
@@ -67,7 +67,7 @@ ScreenBrightness.prototype = {
 
 	this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
 
-	this.menu.addSettingsAction(_("Configure Screen settings"), 'gnome-screen-panel.desktop');
+	this.menu.addSettingsAction(_("Screen Settings"), 'gnome-screen-panel.desktop');
 	
 	_proxy.GetPercentageRemote(Lang.bind(this, function (result, error) {
 	    if (error) {
