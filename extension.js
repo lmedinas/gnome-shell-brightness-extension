@@ -60,7 +60,7 @@ ScreenBrightness.prototype = {
 	this._Slider = new PopupMenu.PopupSliderMenuItem(0);
 	this._Slider.connect('value-changed', function(item) {
 	    let val = item._value * 100;
-	    this._proxy.SetPercentageRemote(val);
+	    _proxy.SetPercentageRemote(val);
 	});
 
 	this.menu.addMenuItem(this._Slider);
