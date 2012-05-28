@@ -1,0 +1,27 @@
+# French translation for gnome-shell-brightness-extension
+# Copyright (c) 2012 gnome-shell-brightness-extension contributors
+# This file is distributed under the same license as the gnome-shell-brightness-extension package.
+# sphax3d <benjamin@sphax3d.org>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: gnome-shell-brightness-extension\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2012-04-30 23:27+0100\n"
+"Last-Translator: Benjamin Danon <benjamin@sphax3d.org>\n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+
+#: extension.js:76
+msgid "Brightness"
+msgstr "Luminosité"
+
+#: extension.js:83
+msgid "Screen Settings"
+msgstr "Paramètres de l’écran"
+
