@@ -40,6 +40,8 @@ const BrightnessIface = {
     ]
 };
 
+const BRIGHTNESS_ADJUSTMENT_STEP = 5; /* Brightness adjustement step (for scrolling on the icon) */
+
 let BrightnessDbus = DBus.makeProxyClass(BrightnessIface);
 
 function ScreenBrightness() {
@@ -50,12 +52,19 @@ ScreenBrightness.prototype = {
     __proto__: PanelMenu.SystemStatusButton.prototype,
 
     _init: function() {
-        PanelMenu.SystemStatusButton.prototype._init.call(this, 'display-brightness-symbolic');
-
-	this.setIcon('display-brightness-symbolic');
+	PanelMenu.SystemStatusButton.prototype._init.call(this, 'display-brightness-symbolic');
 
 	let _proxy = new BrightnessDbus(DBus.session, 'org.gnome.SettingsDaemon', '/org/gnome/SettingsDaemon/Power');
+	_proxy.GetPercentageRemote(Lang.bind(this, function (result, error) {
+	    if (error) {
+                this._Slider.setValue(1);
+	    } else {
+		let value = result / 100;
+		this._Slider.setValue(value);
+	    }
+	}));
 
+	this.setIcon('display-brightness-symbolic');
         let label = new PopupMenu.PopupMenuItem(_("Brightness"), { reactive: false });
         this.menu.addMenuItem(label);
 	this._Slider = new PopupMenu.PopupSliderMenuItem(0);
@@ -65,19 +74,24 @@ ScreenBrightness.prototype = {
 	});
 
 	this.menu.addMenuItem(this._Slider);
-
 	this.menu.addMenuItem(new PopupMenu.PopupSeparatorMenuItem());
-
 	this.menu.addSettingsAction(_("Screen Settings"), 'gnome-screen-panel.desktop');
-	
-	_proxy.GetPercentageRemote(Lang.bind(this, function (result, error) {
-	    if (error) {
-                this._Slider.setValue(1);
-	    } else {
-		let value = result / 100;
-		this._Slider.setValue(value);
-	    }
-	}));
+	this.actor.connect('scroll-event', Lang.bind(this, this._onScrollEvent));
+
+    },
+    
+    _onScrollEvent: function(actor, event) {
+        let direction = event.get_scroll_direction();
+        let currentBrightness = this._brightness;
+
+        if (direction == Clutter.ScrollDirection.DOWN) {
+            this._brightness = Math.max(0, currentBrightness - BRIGHTNESS_ADJUSTMENT_STEP);
+        } else if (direction == Clutter.ScrollDirection.UP) {
+            this._brightness = Math.min(100, currentBrightness + BRIGHTNESS_ADJUSTMENT_STEP);
+        }
+
+        this._slider.setValue(this._brightness / 100);
+        this._proxy.SetPercentageRemote(this._brightness);
     }
 }
 
