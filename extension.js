@@ -19,7 +19,6 @@
  * Boston, MA  02110-1301, USA.
  */
 
-const St = imports.gi.St;
 const Lang = imports.lang;
 const PanelMenu = imports.ui.panelMenu;
 const PopupMenu = imports.ui.popupMenu;
@@ -28,6 +27,8 @@ const GLib = imports.gi.GLib;
 const Util = imports.misc.util;
 const Mainloop = imports.mainloop;
 const DBus = imports.dbus;
+const Gettext = imports.gettext;
+const _ = Gettext.gettext;
 
 const BrightnessIface = {
     name: 'org.gnome.SettingsDaemon.Power.Screen',
@@ -80,8 +81,9 @@ ScreenBrightness.prototype = {
     }
 }
 
-function init() {
-//do nothing
+function init(metadata) {
+    Gettext.bindtextdomain("gnome-shell-brightness-extension", metadata.path + "/locale");
+    Gettext.textdomain("gnome-shell-brightness-extension");
 }
 
 let indicator;
