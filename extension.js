@@ -27,7 +27,8 @@ const GLib = imports.gi.GLib;
 const Util = imports.misc.util;
 const Mainloop = imports.mainloop;
 const DBus = imports.dbus;
-const Gettext = imports.gettext;
+
+const Gettext = imports.gettext.domain('gnome-shell-extensions');
 const _ = Gettext.gettext;
 
 const BrightnessIface = {
@@ -96,8 +97,7 @@ ScreenBrightness.prototype = {
 }
 
 function init(metadata) {
-    Gettext.bindtextdomain("gnome-shell-brightness-extension", metadata.path + "/locale");
-    Gettext.textdomain("gnome-shell-brightness-extension");
+    imports.gettext.bindtextdomain("gnome-shell-brightness-extension", metadata.path + "/locale");
 }
 
 let indicator;
