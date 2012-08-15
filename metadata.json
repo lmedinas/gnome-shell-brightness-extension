@@ -1,8 +1,0 @@
-{
-"shell-version": ["3.0","3.2", "3.3", "3.4", "3.5", "3.6"], 
-"uuid": "brightness_control@lmedinas.org", 
-"name": "Brightness Control", 
-"description": "A small extension to change your monitor brightness quickly.",
-"localedir": "/usr/share/locale",
-"url": "http://gitorious.org/gnome-shell-brightness-extension/gnome-shell-brightness-extension"
-}

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="gnome-shell-extensions">
+    <schema path="/org/gnome/shell/extensions/brightness_control/"
+            id="org.gnome.shell.extensions.brightness_control">
+        <key name="persist" type="b">
+            <default>true</default>
+            <summary>Persist across reboots</summary>
+            <description>The brightness level should survive a reboot</description>
+        </key>
+        <key name="level" type="s">
+            <default>"50"</default>
+            <summary>The current brightness level</summary>
+            <description>The current brightness level</description>
+        </key>
+        <key name="step" type="s">
+            <default>"10"</default>
+            <summary>Brightness adjustment step</summary>
+            <description>Brightness adjustment step when scrolling</description>
+        </key>
+    </schema>
+</schemalist>
