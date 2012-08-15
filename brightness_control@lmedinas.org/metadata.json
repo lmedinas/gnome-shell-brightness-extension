@@ -5,6 +5,6 @@
     "name": "Brightness Control",
     "description": "An applet letting you change the monitor brightness. It (optionally) survives reboots. Hover scrolling is supported.",
     "url": "http://gitorious.org/gnome-shell-brightness-extension/gnome-shell-brightness-extension",
-    "settings-schema": "org.gnome.shell.extensions.brightness-applet",
-    "gettext-domain": "brightness-applet"
+    "settings-schema": "org.gnome.shell.extensions.brightness_control",
+    "gettext-domain": "brightness_control"
 }
