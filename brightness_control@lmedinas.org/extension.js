@@ -164,17 +164,18 @@ function settings_connexion() {
 function init(metadata) {
     imports.gettext.bindtextdomain(Name,
         metadata.path + "/locale");
-    /* TODO: Translations */
-    settings = Convenience.getSettings();
+/* TODO: Translations */
 }
 
 function enable() {
+    settings = Convenience.getSettings();
     indicator = new ScreenBrightness();
     Main.panel.addToStatusArea('brightness', indicator);
     settings_connexion();
 }
 
 function disable() {
+    settings = null;
     if (indicator !== null) indicator.destroy();
     indicator = null;
 }
