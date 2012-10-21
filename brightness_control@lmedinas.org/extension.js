@@ -214,7 +214,7 @@ function enable() {
 }
 
 function disable() {
-    //    indicator._proxy.disconnect(indicator._onChangedId);
+    indicator._proxy.disconnect(indicator._onChangedId);
     settings = null;
     if (indicator !== null) indicator.destroy();
     indicator = null;
