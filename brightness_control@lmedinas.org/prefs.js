@@ -44,7 +44,7 @@ function init() {
 
     stringSettings = {
         step: {
-            label: _("Brightness adjustment step (hover-scroll) [%p]"),
+            label: _("Brightness adjustment step (hover-scroll) [% points]"),
             help: _("Brightness percentage points adjustment step when hover-scrolling")
         }
     /*
