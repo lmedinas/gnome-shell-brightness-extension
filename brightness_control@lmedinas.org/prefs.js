@@ -41,18 +41,18 @@ function init() {
                 + " rebooting in order to have the level saved!")
         }
     };
-
+/*
     stringSettings = {
         step: {
             label: _("Brightness adjustment step (hover-scroll) [% points]"),
             help: _("Brightness percentage points adjustment step when hover-scrolling")
         }
-    /*
+
         level: {
             label: _("The current brightness level"),
             help: _("The current brightness level")
-        }*/
     };
+        }*/
 }
 
 function buildPrefsWidget() {
@@ -70,10 +70,10 @@ function buildPrefsWidget() {
         let hbox = _createBoolSetting(setting);
         vbox.add(hbox);
     }
-    for (setting in stringSettings) {
-        let hbox = createStringSetting(setting);
-        vbox.add(hbox);
-    }
+    //    for (setting in stringSettings) {
+    //        let hbox = createStringSetting(setting);
+    //        vbox.add(hbox);
+    //    }
 
     frame.add(vbox);
     frame.show_all();

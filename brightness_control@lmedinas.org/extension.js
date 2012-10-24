@@ -72,7 +72,7 @@ const BrightnessIface = {
 };
 
 const BrightnessDbus = DBus.makeProxyClass(BrightnessIface);
-let indicator, settings, step, persist;
+let indicator, settings, settingsId, persist;
 
 function ScreenBrightness() {
     this._init.apply(this, arguments);
@@ -90,16 +90,15 @@ ScreenBrightness.prototype = {
 
         /* TODO: This doesn't seem to work on 3.4.2 */
         this._onChangedId = this._proxy.connect('Changed',
-            Lang.bind(this, this._refresh));
+            Lang.bind(this, this._updateBrightness));
 
-        step = settings.get_string("step");
         let level = settings.get_string("level");
         persist = settings.get_boolean("persist");
         if (persist) {
             this._proxy.SetPercentageRemote(parseInt(level));
         }
 
-        this._refresh();
+        this._updateBrightness();
 
         this.setIcon('display-brightness-symbolic');
         let label = new PopupMenu.PopupMenuItem(GCC_("Brightness"), {
@@ -109,7 +108,7 @@ ScreenBrightness.prototype = {
         this.menu.addMenuItem(label);
         this._slider = new PopupMenu.PopupSliderMenuItem(0);
         this._slider.connect('value-changed', Lang.bind(this, function(item) {
-            this._changeBrightness(item._value * 100);
+            this._setBrightness(item._value * 100);
         }));
 
         this.menu.addMenuItem(this._slider);
@@ -121,7 +120,7 @@ ScreenBrightness.prototype = {
         this.newMenuItem.connect("activate", Lang.bind(this, this._launchPrefs));
 
         this.actor.connect('button-press-event',
-            Lang.bind(this, this._refresh));
+            Lang.bind(this, this._updateBrightness));
         this.actor.connect('scroll-event',
             Lang.bind(this, this._onScrollEvent));
     },
@@ -144,8 +143,10 @@ ScreenBrightness.prototype = {
         this._proxy.GetPercentageRemote(Lang.bind(this,
             function (result, error) {
                 if (!error) {
-                    this._changeBrightness(Math.min(100,
-                        parseInt(result) + parseInt(step)));
+                    if (result < 100) {
+                        this._proxy.StepUpRemote();
+                        this._updateBrightness();
+                    }
                 }
             }));
 
@@ -155,33 +156,28 @@ ScreenBrightness.prototype = {
         this._proxy.GetPercentageRemote(Lang.bind(this,
             function (result, error) {
                 if (!error) {
-                    this._changeBrightness(Math.max(0,
-                        parseInt(result) - parseInt(step)));
+                    if (result > 0) {
+                        this._proxy.StepDownRemote();
+                        this._updateBrightness();
+                    }
                 }
             }));
 
     },
 
-    _changeBrightness: function(brightness) {
+    _setBrightness: function(brightness) {
         brightness = parseInt(brightness);
         this._proxy.SetPercentageRemote(brightness);
-        this._updateBrightness(brightness);
+        this._updateBrightness();
     },
 
-    _updateBrightness: function(newValue) {
-        settings.set_string("level", newValue.toString());
-        this._slider.setValue(newValue / 100);
-    },
-
-    _refresh: function() {
-        // Main.notify("_refresh() called");
+    _updateBrightness: function() {
         this._proxy.GetPercentageRemote(Lang.bind(this,
             function (result, error) {
-                if (error) {
-                    this._slider.setValue(1);
-                } else {
-                    if (!this._dragging) this._updateBrightness(result);
-                // else Main.notify("Dragging, so not refreshing");
+                if (!error) {
+                    settings.set_string("level", result.toString());
+                    if (!this._slider._dragging)
+                        this._slider.setValue(result / 100);
                 }
             }));
     },
@@ -195,12 +191,6 @@ ScreenBrightness.prototype = {
     }
 }
 
-function settings_connexion() {
-    settings.connect("changed::" + "step", function() {
-        step = settings.get_string("step");
-    });
-}
-
 function init(metadata) {
     imports.gettext.bindtextdomain(Name,
         metadata.path + "/locale");
@@ -210,11 +200,11 @@ function enable() {
     settings = Convenience.getSettings();
     indicator = new ScreenBrightness();
     Main.panel.addToStatusArea('brightness', indicator, 2);
-    settings_connexion();
 }
 
 function disable() {
-    indicator._proxy.disconnect(indicator._onChangedId);
+    if (indicator !== null && indicator._onChangedId > -1)
+        indicator._proxy.disconnect(indicator._onChangedId);
     settings = null;
     if (indicator !== null) indicator.destroy();
     indicator = null;
