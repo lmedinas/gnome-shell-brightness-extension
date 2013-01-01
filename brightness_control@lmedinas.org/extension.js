@@ -199,7 +199,7 @@ function init(metadata) {
 function enable() {
     settings = Convenience.getSettings();
     indicator = new ScreenBrightness();
-    Main.panel.addToStatusArea('brightness', indicator, 2);
+    Main.panel.addToStatusArea('brightness', indicator, 3);
 }
 
 function disable() {
