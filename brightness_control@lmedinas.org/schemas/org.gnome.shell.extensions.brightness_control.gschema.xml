@@ -12,10 +12,21 @@
             <summary>The current brightness level</summary>
             <description>The current brightness level</description>
         </key>
-        <key name="step" type="s">
+        <!--<key name="step" type="s">
             <default>"10"</default>
             <summary>Brightness adjustment step</summary>
             <description>Brightness adjustment step when scrolling</description>
+        </key>-->
+
+        <key type="as" name="decrease">
+            <default><![CDATA[['<Super>F1']]]>
+            </default>
+            <summary>The keybinding you want to decrease the display brightness with</summary>
+        </key>
+        <key type="as" name="increase">
+            <default><![CDATA[['<Super>F2']]]>
+            </default>
+            <summary>The keybinding you want to increase the display brightness with</summary>
         </key>
     </schema>
 </schemalist>

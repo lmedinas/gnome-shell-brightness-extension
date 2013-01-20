@@ -31,6 +31,7 @@ const Util = imports.misc.util;
 const Mainloop = imports.mainloop;
 const DBus = imports.dbus;
 const Shell = imports.gi.Shell;
+const Meta = imports.gi.Meta;
 const ExtensionUtils = imports.misc.extensionUtils;
 const Convenience = ExtensionUtils.getCurrentExtension().imports.convenience;
 
@@ -72,6 +73,17 @@ const BrightnessIface = {
 };
 
 const BrightnessDbus = DBus.makeProxyClass(BrightnessIface);
+
+const KeyBindings = {
+    'increase': function() {
+        indicator._stepUp();
+    },
+
+    'decrease': function() {
+        indicator._stepDown();
+    }
+}
+
 let indicator, settings, settingsId, persist;
 
 function ScreenBrightness() {
@@ -88,7 +100,7 @@ ScreenBrightness.prototype = {
         this._proxy = new BrightnessDbus(DBus.session,
             'org.gnome.SettingsDaemon', '/org/gnome/SettingsDaemon/Power');
 
-        /* TODO: This doesn't seem to work on 3.4.2 */
+        /* TODO: This doesn't seem to work on GS 3.6 */
         this._onChangedId = this._proxy.connect('Changed',
             Lang.bind(this, this._updateBrightness));
 
@@ -108,7 +120,7 @@ ScreenBrightness.prototype = {
         this.menu.addMenuItem(label);
         this._slider = new PopupMenu.PopupSliderMenuItem(0);
         this._slider.connect('value-changed', Lang.bind(this, function(item) {
-            this._setBrightness(item._value * 100);
+            this._setBrightness(item._value * 100, 0);
         }));
 
         this.menu.addMenuItem(this._slider);
@@ -162,21 +174,20 @@ ScreenBrightness.prototype = {
                     }
                 }
             }));
-
     },
 
-    _setBrightness: function(brightness) {
+    _setBrightness: function(brightness, refreshSlider) {
         brightness = parseInt(brightness);
         this._proxy.SetPercentageRemote(brightness);
-        this._updateBrightness();
+        this._updateBrightness(refreshSlider);
     },
 
-    _updateBrightness: function() {
+    _updateBrightness: function(refreshSlider) {
         this._proxy.GetPercentageRemote(Lang.bind(this,
             function (result, error) {
                 if (!error) {
                     settings.set_string("level", result.toString());
-                    if (!this._slider._dragging)
+                    if (!this._slider._dragging && refreshSlider != 0)
                         this._slider.setValue(result / 100);
                 }
             }));
@@ -200,9 +211,21 @@ function enable() {
     settings = Convenience.getSettings();
     indicator = new ScreenBrightness();
     Main.panel.addToStatusArea('brightness', indicator, 3);
+
+    for(key in KeyBindings) {
+        global.display.add_keybinding(key,
+            settings,
+            Meta.KeyBindingFlags.NONE,
+            KeyBindings[key]
+            );
+    }
 }
 
 function disable() {
+    for(key in KeyBindings) {
+        global.display.remove_keybinding(key);
+    }
+
     if (indicator !== null && indicator._onChangedId > -1)
         indicator._proxy.disconnect(indicator._onChangedId);
     settings = null;
