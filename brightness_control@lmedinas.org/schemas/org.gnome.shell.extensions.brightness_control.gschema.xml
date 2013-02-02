@@ -7,6 +7,11 @@
             <summary>Persist across reboots</summary>
             <description>The brightness level should survive a reboot</description>
         </key>
+        <key name="showicon" type="b">
+            <default>true</default>
+            <summary>Show top bar icon</summary>
+            <description>The extension icon should be shown in the top bar</description>
+        </key>
         <key name="level" type="s">
             <default>"50"</default>
             <summary>The current brightness level</summary>
@@ -18,12 +23,12 @@
             <description>Brightness adjustment step when scrolling</description>
         </key>-->
 
-        <key type="as" name="decrease">
+        <key type="as" name="decreasedisplaybrightness">
             <default><![CDATA[['<Super>F1']]]>
             </default>
             <summary>The keybinding you want to decrease the display brightness with</summary>
         </key>
-        <key type="as" name="increase">
+        <key type="as" name="increasedisplaybrightness">
             <default><![CDATA[['<Super>F2']]]>
             </default>
             <summary>The keybinding you want to increase the display brightness with</summary>

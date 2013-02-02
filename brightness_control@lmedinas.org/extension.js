@@ -75,16 +75,19 @@ const BrightnessIface = {
 const BrightnessDbus = DBus.makeProxyClass(BrightnessIface);
 
 const KeyBindings = {
-    'increase': function() {
+    'increasedisplaybrightness': function() {
         indicator._stepUp();
     },
 
-    'decrease': function() {
+    'decreasedisplaybrightness': function() {
         indicator._stepDown();
     }
 }
 
-let indicator, settings, settingsId, persist;
+const SETTING_ICON = "showicon";
+
+let indicator, settings, settingsId, persist, showIcon;
+let settingsIdArray = [];
 
 function ScreenBrightness() {
     this._init.apply(this, arguments);
@@ -210,7 +213,15 @@ function init(metadata) {
 function enable() {
     settings = Convenience.getSettings();
     indicator = new ScreenBrightness();
-    Main.panel.addToStatusArea('brightness', indicator, 3);
+
+    settingsIdArray[0] = settings.connect("changed::" + SETTING_ICON,
+        Lang.bind(this,  function () {
+            disable();
+            enable();
+        }));
+    showIcon = settings.get_boolean(SETTING_ICON);
+    if (showIcon)
+        Main.panel.addToStatusArea('brightness', indicator, 3);
 
     for(key in KeyBindings) {
         global.display.add_keybinding(key,
@@ -224,6 +235,13 @@ function enable() {
 function disable() {
     for(key in KeyBindings) {
         global.display.remove_keybinding(key);
+    }
+
+    if (settings !== null && settingsIdArray !== null) {
+        for (let i = 0; i < settingsIdArray.length; i++) {
+            if (settingsIdArray[i] > -1)
+                settings.disconnect(settingsIdArray[i]);
+        }
     }
 
     if (indicator !== null && indicator._onChangedId > -1)

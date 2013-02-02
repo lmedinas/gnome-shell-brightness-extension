@@ -31,8 +31,8 @@ let boolSettings;
 let stringSettings;
 
 const pretty_names = {
-    'decrease': 'Decrease display brightness',
-    'increase': 'Increase display brightness'
+    'decreasedisplaybrightness': 'Decrease display brightness',
+    'increasedisplaybrightness': 'Increase display brightness'
 }
 
 function append_hotkey(model, settings, name, pretty_name) {
@@ -52,8 +52,12 @@ function init() {
         persist: {
             label: _("Persist across reboots"),
             help: _("Remember or forget the brightness level across reboots."
-                + " If you enable this, you have to click the icon before"
-                + " rebooting in order to have the level saved!")
+                + " Even if you enable this, you might have to click the icon"
+                + " before rebooting in order to have the level saved!")
+        },
+        showicon: {
+            label: _("Show top bar icon"),
+            help: _("Show or hide the extension icon in the top bar")
         }
     };
 /*
@@ -61,8 +65,7 @@ function init() {
         step: {
             label: _("Brightness adjustment step (hover-scroll) [% points]"),
             help: _("Brightness percentage points adjustment step when hover-scrolling")
-        }
-
+        },
         level: {
             label: _("The current brightness level"),
             help: _("The current brightness level")
